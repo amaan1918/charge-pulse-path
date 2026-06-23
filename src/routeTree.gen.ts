@@ -9,38 +9,194 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StationsRouteImport } from './routes/stations'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RangeRouteImport } from './routes/range'
+import { Route as LocatorRouteImport } from './routes/locator'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StationsIdRouteImport } from './routes/stations.$id'
 
+const StationsRoute = StationsRouteImport.update({
+  id: '/stations',
+  path: '/stations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RangeRoute = RangeRouteImport.update({
+  id: '/range',
+  path: '/range',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocatorRoute = LocatorRouteImport.update({
+  id: '/locator',
+  path: '/locator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorRoute = CalculatorRouteImport.update({
+  id: '/calculator',
+  path: '/calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StationsIdRoute = StationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => StationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/book': typeof BookRoute
+  '/calculator': typeof CalculatorRoute
+  '/dashboard': typeof DashboardRoute
+  '/locator': typeof LocatorRoute
+  '/range': typeof RangeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stations': typeof StationsRouteWithChildren
+  '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/book': typeof BookRoute
+  '/calculator': typeof CalculatorRoute
+  '/dashboard': typeof DashboardRoute
+  '/locator': typeof LocatorRoute
+  '/range': typeof RangeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stations': typeof StationsRouteWithChildren
+  '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/book': typeof BookRoute
+  '/calculator': typeof CalculatorRoute
+  '/dashboard': typeof DashboardRoute
+  '/locator': typeof LocatorRoute
+  '/range': typeof RangeRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/stations': typeof StationsRouteWithChildren
+  '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/book'
+    | '/calculator'
+    | '/dashboard'
+    | '/locator'
+    | '/range'
+    | '/sitemap.xml'
+    | '/stations'
+    | '/stations/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/book'
+    | '/calculator'
+    | '/dashboard'
+    | '/locator'
+    | '/range'
+    | '/sitemap.xml'
+    | '/stations'
+    | '/stations/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/book'
+    | '/calculator'
+    | '/dashboard'
+    | '/locator'
+    | '/range'
+    | '/sitemap.xml'
+    | '/stations'
+    | '/stations/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BookRoute: typeof BookRoute
+  CalculatorRoute: typeof CalculatorRoute
+  DashboardRoute: typeof DashboardRoute
+  LocatorRoute: typeof LocatorRoute
+  RangeRoute: typeof RangeRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StationsRoute: typeof StationsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stations': {
+      id: '/stations'
+      path: '/stations'
+      fullPath: '/stations'
+      preLoaderRoute: typeof StationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/range': {
+      id: '/range'
+      path: '/range'
+      fullPath: '/range'
+      preLoaderRoute: typeof RangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/locator': {
+      id: '/locator'
+      path: '/locator'
+      fullPath: '/locator'
+      preLoaderRoute: typeof LocatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculator': {
+      id: '/calculator'
+      path: '/calculator'
+      fullPath: '/calculator'
+      preLoaderRoute: typeof CalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +204,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stations/$id': {
+      id: '/stations/$id'
+      path: '/$id'
+      fullPath: '/stations/$id'
+      preLoaderRoute: typeof StationsIdRouteImport
+      parentRoute: typeof StationsRoute
+    }
   }
 }
 
+interface StationsRouteChildren {
+  StationsIdRoute: typeof StationsIdRoute
+}
+
+const StationsRouteChildren: StationsRouteChildren = {
+  StationsIdRoute: StationsIdRoute,
+}
+
+const StationsRouteWithChildren = StationsRoute._addFileChildren(
+  StationsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BookRoute: BookRoute,
+  CalculatorRoute: CalculatorRoute,
+  DashboardRoute: DashboardRoute,
+  LocatorRoute: LocatorRoute,
+  RangeRoute: RangeRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StationsRoute: StationsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
