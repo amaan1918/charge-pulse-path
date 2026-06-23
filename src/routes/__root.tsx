@@ -83,10 +83,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "EVChargeHub — Smart EV Charging Stations & Booking" },
       { name: "description", content: "Find, reserve, and pay at thousands of EV charging stations. Real-time availability, fast charging, cost & range calculators." },
       { name: "author", content: "EVChargeHub" },
-      { property: "og:title", content: "EVChargeHub — Charge Smarter. Drive Further." },
-      { property: "og:description", content: "Find and reserve EV charging stations in seconds." },
+      { property: "og:title", content: "EVChargeHub — Smart EV Charging Stations & Booking" },
+      { property: "og:description", content: "Find, reserve, and pay at thousands of EV charging stations. Real-time availability, fast charging, cost & range calculators." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "EVChargeHub — Smart EV Charging Stations & Booking" },
+      { name: "twitter:description", content: "Find, reserve, and pay at thousands of EV charging stations. Real-time availability, fast charging, cost & range calculators." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/861492a4-5cba-4a87-8cbd-9ed39d773e14/id-preview-56f959f6--f652e374-2059-40b8-8198-4f8121b9ed60.lovable.app-1782209955541.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/861492a4-5cba-4a87-8cbd-9ed39d773e14/id-preview-56f959f6--f652e374-2059-40b8-8198-4f8121b9ed60.lovable.app-1782209955541.png" },
     ],
     links: [
       {
