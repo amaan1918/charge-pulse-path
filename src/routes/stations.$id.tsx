@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Clock, Zap, Star, ShieldCheck, Coffee, Wifi, Store, Heart, Share2 } from "lucide-react";
+import { MapPin, Clock, Zap, Star, ShieldCheck, Coffee, Wifi, Store, Heart, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BackButton } from "@/components/BackButton";
 import { findStation, reviews as allReviews } from "@/lib/stations";
+
 import mapBg from "@/assets/map-bg.jpg";
 
 export const Route = createFileRoute("/stations/$id")({
@@ -40,11 +42,10 @@ function StationDetail() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
-      <Button asChild variant="ghost" className="mb-6 hover:bg-white/5">
-        <Link to="/stations"><ArrowLeft className="h-4 w-4" /> Back to stations</Link>
-      </Button>
+      <BackButton to="/stations" label="Back to stations" />
 
       <div className="grid gap-8 lg:grid-cols-3">
+
         <div className="lg:col-span-2">
           <div className="glass overflow-hidden rounded-3xl">
             <div className="relative h-80">

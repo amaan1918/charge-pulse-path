@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Zap, Calendar, Clock, Car, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Zap, Calendar, Clock, Car } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
 import { toast } from "sonner";
 import { stations, findStation, type ChargerType } from "@/lib/stations";
+
 
 
 type SearchParams = { stationId?: string };
@@ -82,13 +84,12 @@ function BookPage() {
   }
 
   return (
-    <div className="relative mx-auto max-w-5xl px-6 py-10">
-      <Link to="/stations" className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium backdrop-blur-md transition-all hover:scale-105 hover:bg-white/10">
-        <ArrowLeft className="h-4 w-4" /> Back
-      </Link>
+    <div className="mx-auto max-w-5xl px-6 py-10">
+      <BackButton to="/stations" />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Booking</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">Reserve a charging slot</h1>
       <p className="mt-2 text-muted-foreground">Pick a station, date and time. Instant confirmation with QR.</p>
+
 
 
       <form onSubmit={submit} className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
