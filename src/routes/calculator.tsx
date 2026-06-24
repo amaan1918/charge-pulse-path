@@ -34,11 +34,12 @@ function CostCalculator() {
   }, [capacity, from, to, rate, chargerKw]);
 
   return (
-    <div className="relative mx-auto max-w-5xl px-6 py-10">
+    <div className="mx-auto max-w-5xl px-6 py-10">
       <BackButton />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Calculator</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">Charging cost calculator</h1>
       <p className="mt-2 text-muted-foreground">Plug in your numbers — we'll do the math.</p>
+
 
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">

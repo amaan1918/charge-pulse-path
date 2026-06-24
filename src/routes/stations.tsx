@@ -36,7 +36,7 @@ function StationsPage() {
   }, [q, type, onlyAvailable]);
 
   return (
-    <div className="relative mx-auto max-w-7xl px-6 py-14">
+    <div className="mx-auto max-w-7xl px-6 py-14">
       <BackButton />
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
@@ -48,6 +48,7 @@ function StationsPage() {
           <Link to="/locator"><Filter className="h-4 w-4" /> Map view</Link>
         </Button>
       </div>
+
 
 
       <div className="glass mt-8 flex flex-col gap-3 rounded-2xl p-4 md:flex-row md:items-center">

@@ -35,11 +35,12 @@ function RangePage() {
   }, [battery, capacity, efficiency]);
 
   return (
-    <div className="relative mx-auto max-w-6xl px-6 py-10">
+    <div className="mx-auto max-w-6xl px-6 py-10">
       <BackButton />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Range</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">How far can you go?</h1>
       <p className="mt-2 text-muted-foreground">Estimate your remaining range and travel distance.</p>
+
 
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">

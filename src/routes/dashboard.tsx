@@ -36,7 +36,7 @@ const favorites = ["evx-001", "evx-003", "evx-006"];
 
 function Dashboard() {
   return (
-    <div className="relative mx-auto max-w-7xl px-6 py-10">
+    <div className="mx-auto max-w-7xl px-6 py-10">
       <BackButton />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -46,6 +46,7 @@ function Dashboard() {
         </div>
         <Button asChild className="shadow-glow"><Link to="/book"><Zap /> New booking</Link></Button>
       </div>
+
 
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
