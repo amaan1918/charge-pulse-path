@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, MapPin, Zap, Navigation } from "lucide-react";
+import { Search, MapPin, Navigation, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { stations, type ChargerType } from "@/lib/stations";
-import mapBg from "@/assets/map-bg.jpg";
+import { GoogleMap } from "@/components/GoogleMap";
 
 export const Route = createFileRoute("/locator")({
   head: () => ({
@@ -39,6 +39,9 @@ function Locator() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-2 gap-1 text-muted-foreground hover:text-foreground">
+        <Link to="/"><ArrowLeft className="h-4 w-4" />Back to home</Link>
+      </Button>
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Locator</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">Find a station near you</h1>
       <p className="mt-2 max-w-2xl text-muted-foreground">Filter by city, state, charger type or availability.</p>
@@ -64,7 +67,7 @@ function Locator() {
               <button
                 key={s.id}
                 onClick={() => setSelected(s.id)}
-                className={`w-full rounded-xl border p-3 text-left transition-all ${selected === s.id ? "border-primary bg-primary/10 shadow-glow" : "border-white/10 bg-white/5 hover:border-white/20"}`}
+                className={`w-full rounded-xl border p-3 text-left transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] ${selected === s.id ? "border-primary bg-primary/10 shadow-glow scale-[1.01]" : "border-white/10 bg-white/5 hover:border-white/20"}`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -84,34 +87,15 @@ function Locator() {
         </div>
 
         <div className="glass relative overflow-hidden rounded-2xl">
-          <img src={mapBg} alt="Map" className="h-full max-h-[80vh] min-h-[500px] w-full object-cover opacity-70" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60" />
-
-          {list.slice(0, 10).map((s, i) => {
-            const x = 10 + ((i * 73) % 80);
-            const y = 10 + ((i * 41) % 75);
-            const active = selected === s.id;
-            return (
-              <button
-                key={s.id}
-                onClick={() => setSelected(s.id)}
-                className="absolute -translate-x-1/2 -translate-y-full"
-                style={{ left: `${x}%`, top: `${y}%` }}
-              >
-                <div className={`relative grid h-10 w-10 place-items-center rounded-full transition-all ${active ? "scale-125 bg-primary shadow-glow" : "bg-primary/80 hover:scale-110"}`}>
-                  <Zap className="h-4 w-4 text-primary-foreground" />
-                  {active && <span className="absolute -inset-2 animate-ping rounded-full border-2 border-primary" />}
-                </div>
-              </button>
-            );
-          })}
+          <GoogleMap stations={list} selectedId={selected} onSelect={setSelected} />
 
           {selected && (() => {
             const s = stations.find((x) => x.id === selected)!;
             return (
-              <div className="glass-strong absolute bottom-4 left-4 right-4 rounded-2xl p-4 animate-fade-in">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
+              <div className="glass-strong absolute bottom-4 left-4 right-4 rounded-2xl p-4 animate-scale-in">
+                <div className="flex items-center gap-3">
+                  <img src={s.image} alt={s.name} className="h-14 w-14 shrink-0 rounded-xl object-cover" loading="lazy" />
+                  <div className="min-w-0 flex-1">
                     <h3 className="truncate text-base font-semibold">{s.name}</h3>
                     <p className="truncate text-xs text-muted-foreground">{s.address}, {s.city} · {s.distanceKm < 1000 ? `${s.distanceKm.toFixed(1)} km` : "long distance"}</p>
                   </div>
