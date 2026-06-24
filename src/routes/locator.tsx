@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, MapPin, Navigation, ArrowLeft } from "lucide-react";
+import { Search, MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { stations, type ChargerType } from "@/lib/stations";
 import { GoogleMap } from "@/components/GoogleMap";
+import { BackButton } from "@/components/BackButton";
+
 
 export const Route = createFileRoute("/locator")({
   head: () => ({
@@ -39,12 +41,11 @@ function Locator() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
-      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-2 gap-1 text-muted-foreground hover:text-foreground">
-        <Link to="/"><ArrowLeft className="h-4 w-4" />Back to home</Link>
-      </Button>
+      <BackButton label="Back to home" />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Locator</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">Find a station near you</h1>
       <p className="mt-2 max-w-2xl text-muted-foreground">Filter by city, state, charger type or availability.</p>
+
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[400px_1fr]">
         <div className="glass space-y-4 rounded-2xl p-5">

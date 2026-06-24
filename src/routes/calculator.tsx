@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Calculator, Zap, Clock, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
+
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -33,9 +35,12 @@ function CostCalculator() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
+      <BackButton />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Calculator</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">Charging cost calculator</h1>
       <p className="mt-2 text-muted-foreground">Plug in your numbers — we'll do the math.</p>
+
+
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_380px]">
         <div className="glass space-y-6 rounded-3xl p-6">

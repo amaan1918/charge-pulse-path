@@ -4,6 +4,8 @@ import { Search, Filter } from "lucide-react";
 import { StationCard } from "@/components/StationCard";
 import { stations, type ChargerType } from "@/lib/stations";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
+
 
 export const Route = createFileRoute("/stations")({
   head: () => ({
@@ -35,6 +37,7 @@ function StationsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
+      <BackButton />
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">All stations</span>
@@ -45,6 +48,8 @@ function StationsPage() {
           <Link to="/locator"><Filter className="h-4 w-4" /> Map view</Link>
         </Button>
       </div>
+
+
 
       <div className="glass mt-8 flex flex-col gap-3 rounded-2xl p-4 md:flex-row md:items-center">
         <div className="flex flex-1 items-center gap-2 rounded-xl bg-white/5 px-3">

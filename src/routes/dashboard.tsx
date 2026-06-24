@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Battery, Calendar, Heart, History, Zap, TrendingUp, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { stations } from "@/lib/stations";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -35,6 +37,7 @@ const favorites = ["evx-001", "evx-003", "evx-006"];
 function Dashboard() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
+      <BackButton />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Dashboard</span>
@@ -43,6 +46,8 @@ function Dashboard() {
         </div>
         <Button asChild className="shadow-glow"><Link to="/book"><Zap /> New booking</Link></Button>
       </div>
+
+
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KPI icon={<Battery />} label="Battery health" value="98%" trend="+1.2%" />

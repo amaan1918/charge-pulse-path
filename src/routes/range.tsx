@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Gauge, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
+
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/range")({
@@ -34,9 +36,12 @@ function RangePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
+      <BackButton />
       <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Range</span>
       <h1 className="mt-2 text-4xl font-black sm:text-5xl">How far can you go?</h1>
       <p className="mt-2 text-muted-foreground">Estimate your remaining range and travel distance.</p>
+
+
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="glass space-y-6 rounded-3xl p-6">
