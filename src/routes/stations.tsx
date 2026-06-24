@@ -4,6 +4,8 @@ import { Search, Filter } from "lucide-react";
 import { StationCard } from "@/components/StationCard";
 import { stations, type ChargerType } from "@/lib/stations";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
+
 
 export const Route = createFileRoute("/stations")({
   head: () => ({

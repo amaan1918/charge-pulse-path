@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Battery, Calendar, Heart, History, Zap, TrendingUp, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/BackButton";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { stations } from "@/lib/stations";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
