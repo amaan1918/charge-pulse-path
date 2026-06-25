@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TripPlannerRouteImport } from './routes/trip-planner'
 import { Route as StationsRouteImport } from './routes/stations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ScanRouteImport } from './routes/scan'
 import { Route as RangeRouteImport } from './routes/range'
 import { Route as LocatorRouteImport } from './routes/locator'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -19,6 +21,11 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StationsIdRouteImport } from './routes/stations.$id'
 
+const TripPlannerRoute = TripPlannerRouteImport.update({
+  id: '/trip-planner',
+  path: '/trip-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StationsRoute = StationsRouteImport.update({
   id: '/stations',
   path: '/stations',
@@ -27,6 +34,11 @@ const StationsRoute = StationsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScanRoute = ScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RangeRoute = RangeRouteImport.update({
@@ -72,8 +84,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/locator': typeof LocatorRoute
   '/range': typeof RangeRoute
+  '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +97,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/locator': typeof LocatorRoute
   '/range': typeof RangeRoute
+  '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesById {
@@ -95,8 +111,10 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/locator': typeof LocatorRoute
   '/range': typeof RangeRoute
+  '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRouteTypes {
@@ -108,8 +126,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/locator'
     | '/range'
+    | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/locator'
     | '/range'
+    | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   id:
     | '__root__'
@@ -130,8 +152,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/locator'
     | '/range'
+    | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   fileRoutesById: FileRoutesById
 }
@@ -142,12 +166,21 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LocatorRoute: typeof LocatorRoute
   RangeRoute: typeof RangeRoute
+  ScanRoute: typeof ScanRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StationsRoute: typeof StationsRouteWithChildren
+  TripPlannerRoute: typeof TripPlannerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trip-planner': {
+      id: '/trip-planner'
+      path: '/trip-planner'
+      fullPath: '/trip-planner'
+      preLoaderRoute: typeof TripPlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stations': {
       id: '/stations'
       path: '/stations'
@@ -160,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scan': {
+      id: '/scan'
+      path: '/scan'
+      fullPath: '/scan'
+      preLoaderRoute: typeof ScanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/range': {
@@ -233,19 +273,11 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LocatorRoute: LocatorRoute,
   RangeRoute: RangeRoute,
+  ScanRoute: ScanRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StationsRoute: StationsRouteWithChildren,
+  TripPlannerRoute: TripPlannerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

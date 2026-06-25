@@ -7,6 +7,8 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/stations", label: "Stations" },
   { to: "/locator", label: "Locator" },
+  { to: "/scan", label: "Scan" },
+  { to: "/trip-planner", label: "Trip Planner" },
   { to: "/calculator", label: "Cost" },
   { to: "/range", label: "Range" },
   { to: "/dashboard", label: "Dashboard" },

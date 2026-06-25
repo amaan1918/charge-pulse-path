@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { Zap, MapPin, Calendar, Calculator, Leaf, Smartphone, Search, ArrowRight, Star, Sparkles, Gauge, BatteryCharging } from "lucide-react";
+import { Zap, MapPin, Calendar, Calculator, Leaf, Smartphone, Search, ArrowRight, Star, Sparkles, Gauge, BatteryCharging, ScanLine, Route as RouteIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StationCard } from "@/components/StationCard";
 import { stations } from "@/lib/stations";
@@ -66,10 +66,13 @@ function Index() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="h-12 px-6 text-base shadow-glow">
-                <Link to="/locator"><MapPin /> Find Charging Station</Link>
+                <Link to="/scan"><ScanLine /> ⚡ Scan & Charge</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 border-white/20 bg-white/5 px-6 text-base backdrop-blur hover:bg-white/10">
-                <Link to="/book"><Calendar /> Book Charging Slot</Link>
+                <Link to="/locator"><MapPin /> Find Station</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-12 border-white/20 bg-white/5 px-6 text-base backdrop-blur hover:bg-white/10">
+                <Link to="/trip-planner"><RouteIcon /> Plan Trip</Link>
               </Button>
             </div>
 

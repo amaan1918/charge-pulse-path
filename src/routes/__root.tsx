@@ -14,6 +14,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { PopupProvider } from "@/components/popups/PopupProvider";
+import { ScanFAB } from "@/components/ScanFAB";
 
 function NotFoundComponent() {
   return (
@@ -129,14 +131,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-      <Toaster />
+      <PopupProvider>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+        <ScanFAB />
+        <Toaster />
+      </PopupProvider>
     </QueryClientProvider>
   );
 }
