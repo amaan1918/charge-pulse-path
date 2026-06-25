@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Zap, Star, Clock } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Station } from "@/lib/stations";
+import { StationDetailsModal } from "@/components/StationDetailsModal";
 
 export function StationCard({ s }: { s: Station }) {
+  const [open, setOpen] = useState(false);
   const status =
     s.available === 0 ? { label: "Full", className: "bg-destructive/15 text-destructive" }
     : s.available <= 2 ? { label: "Limited", className: "bg-yellow-500/15 text-yellow-400" }
@@ -48,14 +51,19 @@ export function StationCard({ s }: { s: Station }) {
           <span>{s.distanceKm < 1000 ? `${s.distanceKm.toFixed(1)} km away` : `${(s.distanceKm/1000).toFixed(1)}k km`}</span>
         </div>
         <div className="mt-4 flex gap-2">
-          <Button asChild variant="outline" className="flex-1 border-white/15 hover:bg-white/5">
-            <Link to="/stations/$id" params={{ id: s.id }}>Details</Link>
+          <Button
+            variant="outline"
+            className="flex-1 border-white/15 hover:bg-white/5"
+            onClick={() => setOpen(true)}
+          >
+            View Details
           </Button>
           <Button asChild className="flex-1 shadow-glow" disabled={s.available === 0}>
             <Link to="/book" search={{ stationId: s.id } as never}>Book Now</Link>
           </Button>
         </div>
       </div>
+      <StationDetailsModal open={open} onClose={() => setOpen(false)} station={s} />
     </div>
   );
 }
