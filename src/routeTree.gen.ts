@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TripPlannerRouteImport } from './routes/trip-planner'
 import { Route as StationsRouteImport } from './routes/stations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ScanRouteImport } from './routes/scan'
@@ -20,6 +21,11 @@ import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StationsIdRouteImport } from './routes/stations.$id'
 
+const TripPlannerRoute = TripPlannerRouteImport.update({
+  id: '/trip-planner',
+  path: '/trip-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StationsRoute = StationsRouteImport.update({
   id: '/stations',
   path: '/stations',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/scan': typeof ScanRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
+  '/trip-planner': typeof TripPlannerRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/scan'
     | '/sitemap.xml'
     | '/stations'
+    | '/trip-planner'
     | '/stations/$id'
   fileRoutesById: FileRoutesById
 }
@@ -157,10 +169,18 @@ export interface RootRouteChildren {
   ScanRoute: typeof ScanRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StationsRoute: typeof StationsRouteWithChildren
+  TripPlannerRoute: typeof TripPlannerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trip-planner': {
+      id: '/trip-planner'
+      path: '/trip-planner'
+      fullPath: '/trip-planner'
+      preLoaderRoute: typeof TripPlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stations': {
       id: '/stations'
       path: '/stations'
@@ -256,6 +276,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScanRoute: ScanRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StationsRoute: StationsRouteWithChildren,
+  TripPlannerRoute: TripPlannerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
