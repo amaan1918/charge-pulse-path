@@ -59,7 +59,7 @@ export function QRScanner({ onResult, onError, timeoutMs = 30000 }: Props) {
       stopped = true;
       if (timer) clearTimeout(timer);
       scanner.stop().catch(() => {});
-      scanner.clear().catch(() => {});
+      try { scanner.clear(); } catch {}
     };
   }, [onResult, onError, timeoutMs]);
 
