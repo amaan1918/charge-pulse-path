@@ -24,15 +24,15 @@ const usage = [
 ];
 
 const bookings = [
-  { id: "b1", stationId: "evx-001", date: "Today · 16:00", duration: "45 min", code: "EVX-9F7K2" },
-  { id: "b2", stationId: "evx-009", date: "Sat · 09:30", duration: "30 min", code: "EVX-2H8M1" },
+  { id: "b1", stationId: "EV001", date: "Today · 4:00 PM", duration: "45 min", code: "EVX-9F7K2" },
+  { id: "b2", stationId: "EV007", date: "Sat · 9:30 AM", duration: "30 min", code: "EVX-2H8M1" },
 ];
 const history = [
-  { id: "h1", stationId: "evx-003", date: "2 days ago", kWh: 48, cost: 20.16 },
-  { id: "h2", stationId: "evx-002", date: "5 days ago", kWh: 32, cost: 10.24 },
-  { id: "h3", stationId: "evx-005", date: "Last week", kWh: 60, cost: 20.40 },
+  { id: "h1", stationId: "EV006", date: "2 days ago", kWh: 48, cost: 1056 },
+  { id: "h2", stationId: "EV004", date: "5 days ago", kWh: 32, cost: 512 },
+  { id: "h3", stationId: "EV010", date: "Last week", kWh: 60, cost: 1080 },
 ];
-const favorites = ["evx-001", "evx-003", "evx-006"];
+const favorites = ["EV001", "EV006", "EV010"];
 
 function Dashboard() {
   return (
@@ -144,7 +144,7 @@ function Dashboard() {
                     <div className="truncate text-sm font-semibold">{s.name}</div>
                     <div className="text-xs text-muted-foreground">{h.date} · {h.kWh} kWh</div>
                   </div>
-                  <span className="font-semibold text-primary">${h.cost.toFixed(2)}</span>
+                  <span className="font-semibold text-primary">₹{h.cost.toFixed(0)}</span>
                 </div>
               );
             })}
