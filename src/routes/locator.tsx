@@ -79,7 +79,7 @@ function Locator() {
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                   <span><span className="text-primary">{s.available}</span>/{s.chargers} chargers</span>
-                  <span>${s.pricePerKwh.toFixed(2)}/kWh</span>
+                  <span>₹{s.pricePerKwh}/kWh</span>
                 </div>
               </button>
             ))}
