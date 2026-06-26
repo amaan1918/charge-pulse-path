@@ -104,7 +104,7 @@ function Index() {
               <div className="rounded-lg bg-white/5 p-2"><div className="text-muted-foreground">Speed</div><div className="mt-1 font-semibold">250 kW</div></div>
             </div>
             <Button asChild size="sm" className="mt-4 w-full shadow-glow">
-              <Link to="/stations/$id" params={{ id: "evx-001" }}>Reserve now <ArrowRight className="h-3 w-3" /></Link>
+              <Link to="/stations/$id" params={{ id: "EV001" }}>Reserve now <ArrowRight className="h-3 w-3" /></Link>
             </Button>
           </div>
         </div>
