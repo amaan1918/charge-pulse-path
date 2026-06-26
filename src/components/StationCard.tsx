@@ -43,7 +43,7 @@ export function StationCard({ s }: { s: Station }) {
           </div>
           <div className="rounded-lg bg-white/5 p-2">
             <div className="text-xs text-muted-foreground">Price</div>
-            <div className="mt-1 text-sm font-semibold">${s.pricePerKwh.toFixed(2)}<span className="text-muted-foreground">/kWh</span></div>
+            <div className="mt-1 text-sm font-semibold">₹{s.pricePerKwh}<span className="text-muted-foreground">/kWh</span></div>
           </div>
         </div>
         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
