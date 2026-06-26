@@ -61,8 +61,8 @@ export function GoogleMap({ stations, selectedId, onSelect }: Props) {
         if (cancelled || !ref.current || !window.google) return;
         const g = window.google.maps;
         mapRef.current = new g.Map(ref.current, {
-          center: { lat: 39.5, lng: -98.35 },
-          zoom: 4,
+          center: { lat: 22.9734, lng: 78.6569 }, // India
+          zoom: 5,
           disableDefaultUI: true,
           zoomControl: true,
           styles: DARK_STYLE,
