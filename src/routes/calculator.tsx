@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Calculator, Zap, Clock, DollarSign } from "lucide-react";
+import { Calculator, Zap, Clock, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/BackButton";
 
@@ -21,7 +21,7 @@ function CostCalculator() {
   const [capacity, setCapacity] = useState(75);
   const [from, setFrom] = useState(20);
   const [to, setTo] = useState(90);
-  const [rate, setRate] = useState(0.34);
+  const [rate, setRate] = useState(18); // ₹/kWh
   const [chargerKw, setChargerKw] = useState(150);
 
   const result = useMemo(() => {
@@ -49,8 +49,8 @@ function CostCalculator() {
           <Slider label="Target battery" value={to} onChange={setTo} min={0} max={100} unit="%" />
           <Slider label="Charger speed" value={chargerKw} onChange={setChargerKw} min={7} max={350} unit="kW" />
           <div>
-            <label className="text-xs text-muted-foreground">Electricity rate ($/kWh)</label>
-            <input type="number" step="0.01" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-primary" />
+            <label className="text-xs text-muted-foreground">Electricity rate (₹/kWh)</label>
+            <input type="number" step="0.5" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none focus:border-primary" />
           </div>
         </div>
 
@@ -58,7 +58,7 @@ function CostCalculator() {
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Estimated result</h3>
           <div className="mt-4 space-y-4">
             <Result icon={<Zap />} label="Units required" value={`${result.units.toFixed(2)} kWh`} />
-            <Result icon={<DollarSign />} label="Charging cost" value={`$${result.cost.toFixed(2)}`} highlight />
+            <Result icon={<IndianRupee />} label="Charging cost" value={`₹${result.cost.toFixed(2)}`} highlight />
             <Result icon={<Clock />} label="Charging time" value={result.minutes < 60 ? `${result.minutes} min` : `${(result.minutes/60).toFixed(1)} h`} />
           </div>
 
