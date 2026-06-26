@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   Route as RouteIcon,
   Zap,
-  DollarSign,
+  IndianRupee,
   Clock,
   Battery,
   Navigation,
@@ -41,8 +41,8 @@ const SAVED_KEY = "evhub_trips";
 
 function TripPlannerPage() {
   const cities = Object.keys(SAMPLE_CITIES);
-  const [start, setStart] = useState(cities[0]);
-  const [end, setEnd] = useState(cities[5]);
+  const [start, setStart] = useState("Ahmedabad, Gujarat");
+  const [end, setEnd] = useState("Mumbai, Maharashtra");
   const [modelName, setModelName] = useState(EV_MODELS[0].name);
   const [batteryPct, setBatteryPct] = useState(80);
   const [batteryKwh, setBatteryKwh] = useState(EV_MODELS[0].defaultBatteryKwh);
@@ -60,7 +60,10 @@ function TripPlannerPage() {
   const compute = () => {
     const s = SAMPLE_CITIES[start];
     const e = SAMPLE_CITIES[end];
-    if (!s || !e) return;
+    if (!s || !e) {
+      alert("Please pick valid Indian cities from the suggestions.");
+      return;
+    }
     const p = planTrip({
       startLabel: start,
       endLabel: end,
@@ -110,16 +113,16 @@ function TripPlannerPage() {
       `Driving time:      ${formatMin(plan.drivingTimeMin)}`,
       `Charging stops:    ${plan.stops.length}`,
       `Charging time:     ${formatMin(plan.totalChargingMin)}`,
-      `Estimated cost:    $${plan.totalCost.toFixed(2)}`,
+      `Estimated cost:    ₹${plan.totalCost.toFixed(2)}`,
       `Energy needed:     ${plan.totalEnergyKwh.toFixed(1)} kWh`,
       `ETA:               ${formatMin(plan.etaMin)}`,
       ``,
       `Stops:`,
       ...plan.stops.map(
         (s, i) =>
-          `  ${i + 1}. ${s.station.name} (${s.station.id.toUpperCase()})` +
+          `  ${i + 1}. ${s.station.name} (${s.station.id})` +
           `\n     Distance: ${s.distanceFromStartKm.toFixed(0)} km · Arrive @ ${s.arrivalBatteryPct.toFixed(0)}%` +
-          `\n     Charge to ${s.chargeToPct}% · +${s.energyAddedKwh.toFixed(1)} kWh · ${s.chargingDurationMin} min · $${s.cost.toFixed(2)}`
+          `\n     Charge to ${s.chargeToPct}% · +${s.energyAddedKwh.toFixed(1)} kWh · ${s.chargingDurationMin} min · ₹${s.cost.toFixed(2)}`
       ),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });
@@ -153,24 +156,25 @@ function TripPlannerPage() {
       {/* FORM */}
       <section className="glass-strong mt-10 rounded-3xl p-6 sm:p-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <Field label="Starting location">
-            <select
+          <Field label="From (start)">
+            <Input
+              list="in-cities"
               value={start}
               onChange={(e) => setStart(e.target.value)}
-              className="h-10 w-full rounded-md border border-white/10 bg-background px-3 text-sm"
-            >
-              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+              placeholder="Ahmedabad, Gujarat"
+            />
           </Field>
-          <Field label="Destination">
-            <select
+          <Field label="To (destination)">
+            <Input
+              list="in-cities"
               value={end}
               onChange={(e) => setEnd(e.target.value)}
-              className="h-10 w-full rounded-md border border-white/10 bg-background px-3 text-sm"
-            >
-              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+              placeholder="Mumbai, Maharashtra"
+            />
           </Field>
+          <datalist id="in-cities">
+            {cities.map((c) => <option key={c} value={c} />)}
+          </datalist>
           <Field label="EV Model">
             <select
               value={modelName}
@@ -239,7 +243,7 @@ function TripPlannerPage() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <SummaryCard icon={Navigation} label="Total distance" value={`${plan.totalDistanceKm.toFixed(0)} km`} />
-            <SummaryCard icon={DollarSign} label="Total cost" value={`$${plan.totalCost.toFixed(2)}`} />
+            <SummaryCard icon={IndianRupee} label="Total cost" value={`₹${plan.totalCost.toFixed(0)}`} />
             <SummaryCard icon={Zap} label="Energy" value={`${plan.totalEnergyKwh.toFixed(1)} kWh`} />
             <SummaryCard icon={Battery} label="Charging stops" value={String(plan.stops.length)} />
             <SummaryCard icon={Clock} label="ETA" value={formatMin(plan.etaMin)} accent />
@@ -375,7 +379,7 @@ function StopRow({ index, stop }: { index: number; stop: import("@/lib/trip-plan
       <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-5">
         <Mini label="Charger" value={stop.station.type} />
         <Mini label="Speed" value={`${stop.station.speedKw} kW`} />
-        <Mini label="Price" value={`$${stop.station.pricePerKwh.toFixed(2)}`} />
+        <Mini label="Price" value={`₹${stop.station.pricePerKwh}/kWh`} />
         <Mini label="Duration" value={`${stop.chargingDurationMin} min`} />
         <Mini label="Available" value={`${stop.station.available}/${stop.station.chargers}`} />
       </div>

@@ -23,7 +23,10 @@ export const Route = createFileRoute("/book")({
   component: BookPage,
 });
 
-const slots = ["07:00", "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
+const slots = [
+  "07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM","12:00 PM",
+  "01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM","06:00 PM","07:00 PM","08:00 PM",
+];
 
 function BookPage() {
   const { stationId } = Route.useSearch();
@@ -33,7 +36,7 @@ function BookPage() {
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [chargerType, setChargerType] = useState<ChargerType>(initial?.type ?? "DC Fast");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [time, setTime] = useState("10:00");
+  const [time, setTime] = useState("10:00 AM");
   const [confirmed, setConfirmed] = useState<null | { code: string }>(null);
 
   const current = findStation(station)!;
@@ -95,10 +98,10 @@ function BookPage() {
       <form onSubmit={submit} className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="glass space-y-5 rounded-3xl p-6">
           <Field label="Vehicle name" icon={<Car className="h-4 w-4 text-primary" />}>
-            <input value={vehicleName} onChange={(e) => setVehicleName(e.target.value)} placeholder="Tesla Model 3" className="input-base" />
+            <input value={vehicleName} onChange={(e) => setVehicleName(e.target.value)} placeholder="Tata Nexon EV" className="input-base" />
           </Field>
           <Field label="Vehicle number">
-            <input value={vehicleNumber} onChange={(e) => setVehicleNumber(e.target.value)} placeholder="ABC-1234" className="input-base" />
+            <input value={vehicleNumber} onChange={(e) => setVehicleNumber(e.target.value)} placeholder="GJ 01 AB 1234" className="input-base" />
           </Field>
           <Field label="Station">
             <select value={station} onChange={(e) => setStation(e.target.value)} className="input-base">
@@ -133,7 +136,7 @@ function BookPage() {
             <Row label="Date" value={date} />
             <Row label="Time" value={time} />
             <Row label="Type" value={chargerType} />
-            <Row label="Rate" value={`$${current.pricePerKwh.toFixed(2)}/kWh`} />
+            <Row label="Rate" value={`₹${current.pricePerKwh}/kWh`} />
           </div>
           <Button type="submit" size="lg" className="mt-5 w-full shadow-glow"><Zap /> Confirm booking</Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">Free cancellation up to 1 hour before</p>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MapPin, Clock, Zap, Star, ShieldCheck, Coffee, Wifi, Store, Heart, Share2 } from "lucide-react";
+import { MapPin, Clock, Zap, Star, ShieldCheck, Coffee, Wifi, Store, Heart, Share2, Download, Printer, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BackButton } from "@/components/BackButton";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/stations/$id")({
     meta: loaderData
       ? [
           { title: `${loaderData.name} — EVChargeHub` },
-          { name: "description", content: `${loaderData.type} at ${loaderData.address}, ${loaderData.city}. ${loaderData.chargers} chargers, ${loaderData.speedKw} kW, $${loaderData.pricePerKwh}/kWh.` },
+          { name: "description", content: `${loaderData.type} at ${loaderData.address}, ${loaderData.city}. ${loaderData.chargers} chargers, ${loaderData.speedKw} kW, ₹${loaderData.pricePerKwh}/kWh.` },
           { property: "og:title", content: `${loaderData.name} — EVChargeHub` },
           { property: "og:description", content: `Book ${loaderData.type} in ${loaderData.city}.` },
           { property: "og:image", content: loaderData.image },
@@ -40,6 +40,25 @@ function StationDetail() {
   const s = Route.useLoaderData();
   const reviews = allReviews.filter((r) => r.stationId === s.id);
 
+  const stationUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/stations/${s.id}`
+      : `/stations/${s.id}`;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(stationUrl)}`;
+  const qrDownload = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&format=png&data=${encodeURIComponent(stationUrl)}`;
+
+  const printQR = () => {
+    const w = window.open("", "_blank", "width=480,height=640");
+    if (!w) return;
+    w.document.write(`<!doctype html><html><head><title>${s.id} — ${s.name}</title>
+      <style>body{font-family:system-ui;margin:0;padding:32px;text-align:center}h1{margin:0 0 4px;font-size:20px}p{margin:4px 0;color:#444;font-size:13px}img{margin:16px 0}</style>
+      </head><body><h1>${s.name}</h1><p>Station ID: <b>${s.id}</b></p><p>${s.address}, ${s.city}, ${s.state} — ${s.pincode}</p>
+      <img src="${qrDownload}" width="320" height="320" alt="QR"/><p>Scan to open station details and start charging</p>
+      <p style="color:#888">${stationUrl}</p></body></html>`);
+    w.document.close();
+    w.onload = () => w.print();
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <BackButton to="/stations" label="Back to stations" />
@@ -57,7 +76,7 @@ function StationDetail() {
               </div>
               <div className="absolute bottom-5 left-5">
                 <h1 className="text-3xl font-black sm:text-4xl">{s.name}</h1>
-                <p className="mt-1 flex items-center gap-1 text-sm text-white/80"><MapPin className="h-4 w-4" /> {s.address}, {s.city}, {s.state}</p>
+                <p className="mt-1 flex items-center gap-1 text-sm text-white/80"><MapPin className="h-4 w-4" /> {s.address}, {s.city}, {s.state} — {s.pincode}</p>
               </div>
               <div className="absolute right-5 top-5 flex gap-2">
                 <button className="grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur transition-colors hover:bg-primary hover:text-primary-foreground"><Heart className="h-4 w-4" /></button>
@@ -68,7 +87,7 @@ function StationDetail() {
             <div className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-4">
               <Stat label="Available" value={`${s.available}/${s.chargers}`} accent />
               <Stat label="Speed" value={`${s.speedKw} kW`} />
-              <Stat label="Price" value={`$${s.pricePerKwh.toFixed(2)}/kWh`} />
+              <Stat label="Price" value={`₹${s.pricePerKwh}/kWh`} />
               <Stat label="Rating" value={`★ ${s.rating}`} />
             </div>
           </div>
@@ -126,19 +145,37 @@ function StationDetail() {
         <aside className="lg:col-span-1">
           <div className="glass-strong sticky top-24 rounded-3xl p-6">
             <div className="text-xs uppercase tracking-wider text-muted-foreground">Estimated cost</div>
-            <div className="mt-1 text-4xl font-black"><span className="gradient-text">${(s.pricePerKwh * 60).toFixed(2)}</span></div>
+            <div className="mt-1 text-4xl font-black"><span className="gradient-text">₹{(s.pricePerKwh * 60).toFixed(0)}</span></div>
             <div className="text-xs text-muted-foreground">for a full 60 kWh charge</div>
 
             <div className="mt-5 space-y-3 text-sm">
               <Row label="Charger type" value={s.type} />
               <Row label="Peak speed" value={`${s.speedKw} kW`} />
-              <Row label="Price" value={`$${s.pricePerKwh.toFixed(2)}/kWh`} />
+              <Row label="Price" value={`₹${s.pricePerKwh}/kWh`} />
               <Row label="Status" value={s.available > 0 ? `${s.available} available` : "Currently full"} highlight={s.available > 0} />
             </div>
 
             <Button asChild size="lg" disabled={s.available === 0} className="mt-5 w-full shadow-glow">
-              <Link to="/book" search={{ stationId: s.id } as never}><Zap /> Reserve a slot</Link>
+              <Link to="/book" search={{ stationId: s.id } as never}><Zap /> Start Charging</Link>
             </Button>
+
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
+              <div className="flex items-center justify-center gap-1 text-xs uppercase tracking-wider text-muted-foreground">
+                <QrCode className="h-3.5 w-3.5" /> Station QR · {s.id}
+              </div>
+              <div className="mx-auto mt-3 w-fit rounded-xl bg-white p-3">
+                <img src={qrSrc} width={180} height={180} alt={`QR code for ${s.name}`} />
+              </div>
+              <p className="mt-2 break-all text-[10px] text-muted-foreground">{stationUrl}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Button asChild variant="outline" size="sm" className="border-white/15">
+                  <a href={qrDownload} download={`${s.id}-qr.png`}><Download className="h-3 w-3" /> Download</a>
+                </Button>
+                <Button onClick={printQR} variant="outline" size="sm" className="border-white/15">
+                  <Printer className="h-3 w-3" /> Print
+                </Button>
+              </div>
+            </div>
 
             <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
               <img src={mapBg} alt="Map" className="h-32 w-full object-cover" />

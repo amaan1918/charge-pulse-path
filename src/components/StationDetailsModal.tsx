@@ -75,17 +75,17 @@ export function StationDetailsModal({ open, onClose, station }: Props) {
           <div className="absolute bottom-4 left-5 right-5">
             <h2 className="text-2xl font-black tracking-tight">{station.name}</h2>
             <p className="mt-1 flex items-center gap-1 text-xs text-white/80">
-              <MapPin className="h-3.5 w-3.5" /> {station.address}, {station.city}, {station.state}
+              <MapPin className="h-3.5 w-3.5" /> {station.address}, {station.city}, {station.state} — {station.pincode}
             </p>
           </div>
         </div>
 
         <div className="max-h-[55vh] overflow-y-auto p-6">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Cell label="Station ID" value={station.id.toUpperCase()} />
+            <Cell label="Station ID" value={station.id} />
             <Cell label="Power" value={`${station.speedKw} kW`} accent />
             <Cell label="Chargers" value={`${station.available}/${station.chargers}`} />
-            <Cell label="Price" value={`$${station.pricePerKwh.toFixed(2)}/kWh`} />
+            <Cell label="Price" value={`₹${station.pricePerKwh}/kWh`} />
             <Cell label="Hours" value={station.hours} />
             <Cell label="Est. time" value={`~${estChargingTimeMin} min`} />
             <Cell label="Rating" value={`★ ${station.rating} (${station.reviews})`} />
@@ -104,7 +104,7 @@ export function StationDetailsModal({ open, onClose, station }: Props) {
               <div className="mt-3 grid grid-cols-3 gap-3 text-center">
                 <Live label="Speed" value={`${station.speedKw} kW`} />
                 <Live label="Delivered" value={`${energyKwh.toFixed(2)} kWh`} />
-                <Live label="Cost" value={`$${cost}`} />
+                <Live label="Cost" value={`₹${cost}`} />
               </div>
               <div className="mt-3 text-center text-xs text-muted-foreground">
                 Elapsed {Math.floor(elapsedSec / 60)}m {elapsedSec % 60}s

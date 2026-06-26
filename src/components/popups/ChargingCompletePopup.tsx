@@ -31,7 +31,7 @@ Station: ${session.stationName ?? "—"}
 Energy delivered: ${session.energyKwh.toFixed(2)} kWh
 Charging time: ${session.durationMin} min
 Battery level: ${session.batteryLevel}%
-Total cost: $${session.totalCost.toFixed(2)}
+Total cost: ₹${session.totalCost.toFixed(2)}
 CO2 saved: ${session.co2SavedKg.toFixed(2)} kg
 
 Thank you for choosing EVChargeHub.
@@ -83,7 +83,7 @@ Thank you for choosing EVChargeHub.
           <div className="mt-5 grid grid-cols-2 gap-3 text-left text-xs">
             <Field label="Energy" value={`${session.energyKwh.toFixed(1)} kWh`} accent />
             <Field label="Time" value={`${session.durationMin} min`} />
-            <Field label="Cost" value={`$${session.totalCost.toFixed(2)}`} />
+            <Field label="Cost" value={`₹${session.totalCost.toFixed(2)}`} />
             <Field label="Battery" value={`${session.batteryLevel}%`} accent />
             <Field label="CO₂ saved" value={`${session.co2SavedKg.toFixed(2)} kg`} />
             <Field label="Station" value={session.stationName ?? "—"} />

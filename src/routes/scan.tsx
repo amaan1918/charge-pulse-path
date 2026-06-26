@@ -17,16 +17,14 @@ export const Route = createFileRoute("/scan")({
   component: ScanPage,
 });
 
-const ALIASES: Record<string, string> = {
-  EV001: "evx-001",
-  EV002: "evx-002",
-  EV003: "evx-003",
-  EV004: "evx-004",
-};
+// Stations use canonical EVxxx IDs. QR payloads can also be full URLs
+// like https://example.com/stations/EV001 — we extract the trailing ID.
+const SAMPLE_CODES = ["EV001", "EV006", "EV009", "EV010"];
 
 function resolveStation(code: string): Station | null {
   const trimmed = code.trim();
-  const id = ALIASES[trimmed.toUpperCase()] ?? trimmed.toLowerCase();
+  const match = trimmed.match(/EV\d{3,}/i);
+  const id = (match ? match[0] : trimmed).toUpperCase();
   return findStation(id) ?? null;
 }
 
@@ -90,7 +88,7 @@ function ScanPage() {
           Sample station codes
         </h2>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {Object.keys(ALIASES).map((code) => (
+          {SAMPLE_CODES.map((code) => (
             <button
               key={code}
               onClick={() => handleResult(code)}
@@ -120,7 +118,7 @@ function ScanPage() {
           <h3 className="font-semibold text-foreground">Available stations</h3>
           <ul className="mt-2 space-y-1">
             {stations.slice(0, 4).map((s) => (
-              <li key={s.id} className="flex justify-between"><span>{s.name}</span><span className="text-primary">{s.id.toUpperCase()}</span></li>
+              <li key={s.id} className="flex justify-between"><span>{s.name}</span><span className="text-primary">{s.id}</span></li>
             ))}
           </ul>
         </div>

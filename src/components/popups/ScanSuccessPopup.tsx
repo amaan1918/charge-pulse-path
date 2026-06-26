@@ -63,7 +63,7 @@ export function ScanSuccessPopup({
             <Field label="Charger" value={station.type} />
             <Field label="Power" value={`${station.speedKw} kW`} />
             <Field label="Available" value={`${station.available}/${station.chargers}`} accent />
-            <Field label="Price" value={`$${station.pricePerKwh.toFixed(2)}/kWh`} />
+            <Field label="Price" value={`₹${station.pricePerKwh}/kWh`} />
           </div>
         )}
 
