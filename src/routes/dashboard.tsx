@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/BackButton";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { stations } from "@/lib/stations";
+import { StationThumb } from "@/components/StationImage";
 
 
 export const Route = createFileRoute("/dashboard")({
@@ -118,7 +119,7 @@ function Dashboard() {
               const s = stations.find((x) => x.id === id)!;
               return (
                 <Link to="/stations/$id" params={{ id: s.id }} key={id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 transition-colors hover:border-primary/30">
-                  <img src={s.image} className="h-12 w-12 rounded-lg object-cover" alt="" />
+                  <StationThumb src={s.image} alt={s.name} size="h-12 w-12" />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-semibold">{s.name}</div>
                     <div className="truncate text-xs text-muted-foreground">{s.city}, {s.state} · {s.type}</div>
