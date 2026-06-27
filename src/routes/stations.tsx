@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, Filter } from "lucide-react";
 import { StationCard } from "@/components/StationCard";
 import { stations, type ChargerType } from "@/lib/stations";
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/BackButton";
+import { usePopup } from "@/components/popups/PopupProvider";
 
 
 export const Route = createFileRoute("/stations")({
@@ -25,6 +26,12 @@ function StationsPage() {
   const [q, setQ] = useState("");
   const [type, setType] = useState<"All" | ChargerType>("All");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const { showOfferOncePerDay } = usePopup();
+
+  useEffect(() => {
+    const t = setTimeout(() => showOfferOncePerDay(), 800);
+    return () => clearTimeout(t);
+  }, [showOfferOncePerDay]);
 
   const list = useMemo(() => {
     return stations.filter((s) => {
