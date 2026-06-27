@@ -95,7 +95,7 @@ function Locator() {
             return (
               <div className="glass-strong absolute bottom-4 left-4 right-4 rounded-2xl p-4 animate-scale-in">
                 <div className="flex items-center gap-3">
-                  <img src={s.image} alt={s.name} className="h-14 w-14 shrink-0 rounded-xl object-cover" loading="lazy" />
+                  <StationThumb src={s.image} alt={s.name} />
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate text-base font-semibold">{s.name}</h3>
                     <p className="truncate text-xs text-muted-foreground">{s.address}, {s.city} · {s.distanceKm < 1000 ? `${s.distanceKm.toFixed(1)} km` : "long distance"}</p>
