@@ -41,6 +41,21 @@ export const Route = createFileRoute("/trip-planner")({
 
 const SAVED_KEY = "evhub_trips";
 
+function sampleWeather(destination: string): WeatherData {
+  // Deterministic pseudo-random condition per destination + date so the demo feels stable
+  const seed = (destination + new Date().toDateString())
+    .split("")
+    .reduce((a, c) => a + c.charCodeAt(0), 0);
+  const variants: WeatherData[] = [
+    { tempC: 38, condition: "hot", location: destination },
+    { tempC: 7, condition: "cold", location: destination },
+    { tempC: 24, condition: "rain", location: destination },
+    { tempC: 41, condition: "hot", location: destination },
+    { tempC: 22, condition: "normal", location: destination },
+  ];
+  return variants[seed % variants.length];
+}
+
 function TripPlannerPage() {
   const cities = Object.keys(SAMPLE_CITIES);
   const { showWeatherAlert } = usePopup();
