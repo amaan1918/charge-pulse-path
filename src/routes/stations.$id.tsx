@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BackButton } from "@/components/BackButton";
 import { findStation, reviews as allReviews } from "@/lib/stations";
+import { StationImage } from "@/components/StationImage";
 
 import mapBg from "@/assets/map-bg.jpg";
 
