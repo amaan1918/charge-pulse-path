@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Station } from "@/lib/stations";
 import { StationDetailsModal } from "@/components/StationDetailsModal";
+import { StationImage } from "@/components/StationImage";
 
 export function StationCard({ s }: { s: Station }) {
   const [open, setOpen] = useState(false);
@@ -15,9 +16,9 @@ export function StationCard({ s }: { s: Station }) {
 
   return (
     <div className="group glass overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-glow">
-      <div className="relative h-40 overflow-hidden">
-        <img src={s.image} alt={s.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div className="relative">
+        <StationImage src={s.image} alt={s.name} aspect="aspect-[16/10]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute left-3 top-3 flex gap-2">
           <Badge className={`${status.className} border-0`}>{status.label}</Badge>
           <Badge variant="outline" className="border-white/20 bg-black/40 text-white backdrop-blur">{s.type}</Badge>
