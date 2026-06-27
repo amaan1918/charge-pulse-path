@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { GlassDialog } from "@/components/popups/GlassDialog";
 import { usePopup } from "@/components/popups/PopupProvider";
 import type { Station } from "@/lib/stations";
+import { StationImage } from "@/components/StationImage";
 
 interface Props {
   open: boolean;
@@ -65,9 +66,9 @@ export function StationDetailsModal({ open, onClose, station }: Props) {
   return (
     <GlassDialog open={open} onClose={onClose} size="lg">
       <div className="-m-7">
-        <div className="relative h-44 overflow-hidden rounded-t-3xl">
-          <img src={station.image} alt={station.name} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+        <div className="relative overflow-hidden rounded-t-3xl">
+          <StationImage src={station.image} alt={station.name} aspect="aspect-[21/9]" hoverZoom={false} />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
           <div className="absolute left-5 top-5 flex gap-2">
             <Badge className={`${status.color} border-0`}>{status.label}</Badge>
             <Badge variant="outline" className="border-white/20 bg-black/40 text-white backdrop-blur">{station.type}</Badge>
