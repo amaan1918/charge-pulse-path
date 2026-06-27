@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { stations, type ChargerType } from "@/lib/stations";
 import { GoogleMap } from "@/components/GoogleMap";
 import { BackButton } from "@/components/BackButton";
+import { StationThumb } from "@/components/StationImage";
 
 
 export const Route = createFileRoute("/locator")({
