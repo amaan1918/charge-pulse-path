@@ -67,9 +67,9 @@ function StationDetail() {
 
         <div className="lg:col-span-2">
           <div className="glass overflow-hidden rounded-3xl">
-            <div className="relative h-80">
-              <img src={s.image} alt={s.name} className="h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+            <div className="relative">
+              <StationImage src={s.image} alt={s.name} aspect="aspect-[16/9]" hoverZoom={false} />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
               <div className="absolute left-5 top-5 flex gap-2">
                 <Badge className="border-0 bg-primary/20 text-primary backdrop-blur">{s.type}</Badge>
                 <Badge variant="outline" className="border-white/20 bg-black/40 text-white backdrop-blur">{s.speedKw} kW</Badge>
