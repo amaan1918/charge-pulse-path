@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Zap, Menu, X } from "lucide-react";
+import { Zap, Menu, X, User as UserIcon, LogOut, Shield } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useAuth, signOut } from "@/hooks/use-auth";
+import { useNavigate } from "@tanstack/react-router";
 
 const links = [
   { to: "/", label: "Home" },
@@ -16,6 +18,8 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { user, isAdmin } = useAuth();
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="mx-auto mt-3 max-w-7xl px-4">
@@ -45,9 +49,25 @@ export function Navbar() {
           </ul>
 
           <div className="hidden items-center gap-2 md:flex">
-            <Button asChild variant="ghost" size="sm" className="text-foreground hover:bg-white/5">
-              <Link to="/dashboard">Sign in</Link>
-            </Button>
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Button asChild variant="ghost" size="sm" className="text-primary hover:bg-white/5">
+                    <Link to="/admin/dashboard"><Shield className="mr-1 h-4 w-4" />Admin</Link>
+                  </Button>
+                )}
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/account"><UserIcon className="mr-1 h-4 w-4" />Account</Link>
+                </Button>
+                <Button variant="ghost" size="sm" onClick={async () => { await signOut(); navigate({ to: "/" }); }}>
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <Button asChild variant="ghost" size="sm" className="text-foreground hover:bg-white/5">
+                <Link to="/auth">Sign in</Link>
+              </Button>
+            )}
             <Button asChild size="sm" className="shadow-glow">
               <Link to="/book">Book a slot</Link>
             </Button>

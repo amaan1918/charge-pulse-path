@@ -18,8 +18,12 @@ import { Route as LocatorRouteImport } from './routes/locator'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as BookRouteImport } from './routes/book'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StationsIdRouteImport } from './routes/stations.$id'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
 const TripPlannerRoute = TripPlannerRouteImport.update({
   id: '/trip-planner',
@@ -66,6 +70,21 @@ const BookRoute = BookRouteImport.update({
   path: '/book',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -76,9 +95,17 @@ const StationsIdRoute = StationsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => StationsRoute,
 } as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
   '/dashboard': typeof DashboardRoute
@@ -88,10 +115,14 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
   '/dashboard': typeof DashboardRoute
@@ -101,11 +132,15 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
   '/dashboard': typeof DashboardRoute
@@ -115,12 +150,16 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
     | '/book'
     | '/calculator'
     | '/dashboard'
@@ -130,10 +169,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
     | '/book'
     | '/calculator'
     | '/dashboard'
@@ -143,10 +186,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   id:
     | '__root__'
     | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
     | '/book'
     | '/calculator'
     | '/dashboard'
@@ -156,11 +203,15 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   CalculatorRoute: typeof CalculatorRoute
   DashboardRoute: typeof DashboardRoute
@@ -237,6 +288,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -251,8 +323,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StationsIdRouteImport
       parentRoute: typeof StationsRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminDashboardRoute: AdminDashboardRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface StationsRouteChildren {
   StationsIdRoute: typeof StationsIdRoute
@@ -268,6 +357,9 @@ const StationsRouteWithChildren = StationsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   CalculatorRoute: CalculatorRoute,
   DashboardRoute: DashboardRoute,
@@ -281,13 +373,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
