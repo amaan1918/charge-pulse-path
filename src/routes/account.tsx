@@ -91,7 +91,7 @@ function AccountPage() {
               const st = stations.find((s) => s.id === b.stationId);
               return (
                 <li key={b.id} className="flex items-center gap-3 rounded-xl border border-white/5 p-3">
-                  {st && <StationThumb src={st.image} alt={st.name} className="h-12 w-12 shrink-0 rounded-lg" />}
+                  {st && <StationThumb src={st.image} alt={st.name} size="h-12 w-12 shrink-0 rounded-lg" />}
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{st?.name}</p>
                     <p className="text-xs text-muted-foreground">{b.date} · {b.duration} · {b.code}</p>
@@ -108,7 +108,7 @@ function AccountPage() {
               const st = stations.find((s) => s.id === h.stationId);
               return (
                 <li key={h.id} className="flex items-center gap-3 rounded-xl border border-white/5 p-3">
-                  {st && <StationThumb src={st.image} alt={st.name} className="h-12 w-12 shrink-0 rounded-lg" />}
+                  {st && <StationThumb src={st.image} alt={st.name} size="h-12 w-12 shrink-0 rounded-lg" />}
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{st?.name}</p>
                     <p className="text-xs text-muted-foreground">{h.date} · {h.kWh} kWh</p>
@@ -127,7 +127,7 @@ function AccountPage() {
             <ul className="space-y-2">
               {favoriteStations.map((s) => (
                 <li key={s.id} className="flex items-center gap-3 rounded-xl border border-white/5 p-2">
-                  <StationThumb src={s.image} alt={s.name} className="h-10 w-10 rounded-lg" />
+                  <StationThumb src={s.image} alt={s.name} size="h-10 w-10 rounded-lg" />
                   <span className="truncate text-sm">{s.name}</span>
                 </li>
               ))}
