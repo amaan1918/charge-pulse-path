@@ -23,6 +23,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StationsIdRouteImport } from './routes/stations.$id'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
 const TripPlannerRoute = TripPlannerRouteImport.update({
   id: '/trip-planner',
@@ -94,11 +95,16 @@ const StationsIdRoute = StationsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => StationsRoute,
 } as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -109,12 +115,13 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -125,13 +132,14 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   id:
     | '__root__'
@@ -192,13 +203,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
+    | '/admin/dashboard'
     | '/stations/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   CalculatorRoute: typeof CalculatorRoute
@@ -311,8 +323,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StationsIdRouteImport
       parentRoute: typeof StationsRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminDashboardRoute: AdminDashboardRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface StationsRouteChildren {
   StationsIdRoute: typeof StationsIdRoute
@@ -329,7 +358,7 @@ const StationsRouteWithChildren = StationsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   CalculatorRoute: CalculatorRoute,
