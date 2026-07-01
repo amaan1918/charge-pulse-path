@@ -23,7 +23,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StationsIdRouteImport } from './routes/stations.$id'
-import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated.admin.dashboard'
 
 const TripPlannerRoute = TripPlannerRouteImport.update({
   id: '/trip-planner',
@@ -95,16 +95,17 @@ const StationsIdRoute = StationsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => StationsRoute,
 } as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminRoute,
-} as any)
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/_authenticated/admin/dashboard',
+    path: '/admin/dashboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -115,13 +116,13 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
-  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -132,14 +133,14 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
-  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/admin': typeof AdminRouteWithChildren
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/book': typeof BookRoute
   '/calculator': typeof CalculatorRoute
@@ -150,8 +151,8 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stations': typeof StationsRouteWithChildren
   '/trip-planner': typeof TripPlannerRoute
-  '/admin/dashboard': typeof AdminDashboardRoute
   '/stations/$id': typeof StationsIdRoute
+  '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,8 +170,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
-    | '/admin/dashboard'
     | '/stations/$id'
+    | '/admin/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,8 +187,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
-    | '/admin/dashboard'
     | '/stations/$id'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/'
@@ -203,14 +204,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stations'
     | '/trip-planner'
-    | '/admin/dashboard'
     | '/stations/$id'
+    | '/_authenticated/admin/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  AdminRoute: typeof AdminRouteWithChildren
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   BookRoute: typeof BookRoute
   CalculatorRoute: typeof CalculatorRoute
@@ -221,6 +222,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StationsRoute: typeof StationsRouteWithChildren
   TripPlannerRoute: typeof TripPlannerRoute
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -323,25 +325,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StationsIdRouteImport
       parentRoute: typeof StationsRoute
     }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
+    '/_authenticated/admin/dashboard': {
+      id: '/_authenticated/admin/dashboard'
+      path: '/admin/dashboard'
       fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface AdminRouteChildren {
-  AdminDashboardRoute: typeof AdminDashboardRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminDashboardRoute: AdminDashboardRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface StationsRouteChildren {
   StationsIdRoute: typeof StationsIdRoute
@@ -358,7 +350,7 @@ const StationsRouteWithChildren = StationsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  AdminRoute: AdminRouteWithChildren,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   BookRoute: BookRoute,
   CalculatorRoute: CalculatorRoute,
@@ -369,17 +361,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StationsRoute: StationsRouteWithChildren,
   TripPlannerRoute: TripPlannerRoute,
+  AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

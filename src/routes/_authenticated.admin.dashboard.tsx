@@ -8,7 +8,7 @@ import { signOut } from "@/hooks/use-auth";
 import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/dashboard")({
+export const Route = createFileRoute("/_authenticated/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard — EVChargeHub" }, { name: "robots", content: "noindex" }] }),
   component: AdminDashboard,
 });
