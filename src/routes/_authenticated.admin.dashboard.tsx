@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Activity, BarChart3, Battery, Bell, Calendar, Car, IndianRupee, LogOut, MapPin, MessageSquare, Plug, Settings, Shield, Star, Users, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,17 @@ import { stations } from "@/lib/stations";
 import { signOut } from "@/hooks/use-auth";
 import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { toast } from "sonner";
+import { verifyAdmin } from "@/lib/admin.functions";
 
-export const Route = createFileRoute("/admin/dashboard")({
+export const Route = createFileRoute("/_authenticated/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard — EVChargeHub" }, { name: "robots", content: "noindex" }] }),
+  beforeLoad: async () => {
+    try {
+      await verifyAdmin();
+    } catch {
+      throw redirect({ to: "/admin" });
+    }
+  },
   component: AdminDashboard,
 });
 
@@ -29,24 +37,13 @@ const userGrowth = [
 function AdminDashboard() {
   const navigate = useNavigate();
   const [userCount, setUserCount] = useState<number | null>(null);
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) return navigate({ to: "/admin" });
-      const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.session.user.id).eq("role", "admin").maybeSingle();
-      if (!role) {
-        toast.error("Admin access required");
-        return navigate({ to: "/admin" });
-      }
-      setChecked(true);
       const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true });
       setUserCount(count ?? 0);
     })();
-  }, [navigate]);
-
-  if (!checked) return <div className="mx-auto max-w-7xl px-6 py-20 text-center text-muted-foreground">Verifying admin access…</div>;
+  }, []);
 
   const totalChargers = stations.reduce((a, s) => a + s.chargers, 0);
   const available = stations.reduce((a, s) => a + s.available, 0);
