@@ -37,24 +37,13 @@ const userGrowth = [
 function AdminDashboard() {
   const navigate = useNavigate();
   const [userCount, setUserCount] = useState<number | null>(null);
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) return navigate({ to: "/admin" });
-      const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.session.user.id).eq("role", "admin").maybeSingle();
-      if (!role) {
-        toast.error("Admin access required");
-        return navigate({ to: "/admin" });
-      }
-      setChecked(true);
       const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true });
       setUserCount(count ?? 0);
     })();
-  }, [navigate]);
-
-  if (!checked) return <div className="mx-auto max-w-7xl px-6 py-20 text-center text-muted-foreground">Verifying admin access…</div>;
+  }, []);
 
   const totalChargers = stations.reduce((a, s) => a + s.chargers, 0);
   const available = stations.reduce((a, s) => a + s.available, 0);
