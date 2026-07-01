@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, EyeOff, Zap, Mail, Lock, User, Phone, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Zap, Mail, Lock, User, Phone, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
@@ -19,6 +19,17 @@ export const Route = createFileRoute("/auth")({
   }),
   component: AuthPage,
 });
+
+async function redirectAfterLogin(navigate: ReturnType<typeof useNavigate>, userId: string) {
+  const { data } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (data) navigate({ to: "/admin/dashboard" });
+  else navigate({ to: "/account" });
+}
 
 const registerSchema = z.object({
   full_name: z.string().trim().min(2, "Enter your full name").max(80),
@@ -42,7 +53,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/account" });
+      if (data.session?.user) redirectAfterLogin(navigate, data.session.user.id);
     });
   }, [navigate]);
 
@@ -56,12 +67,16 @@ function AuthPage() {
       </Link>
       <div className="glass w-full rounded-2xl p-6 backdrop-blur-xl">
         <Tabs defaultValue="login">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="login">Login</TabsTrigger>
+            <TabsTrigger value="phone">Phone OTP</TabsTrigger>
             <TabsTrigger value="register">Register</TabsTrigger>
           </TabsList>
           <TabsContent value="login" className="mt-6">
             <LoginForm />
+          </TabsContent>
+          <TabsContent value="phone" className="mt-6">
+            <PhoneOtpForm />
           </TabsContent>
           <TabsContent value="register" className="mt-6">
             <RegisterForm />
@@ -89,14 +104,22 @@ function GoogleButton() {
       disabled={loading}
       onClick={async () => {
         setLoading(true);
-        const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/account" });
+        const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
         if (result.error) {
           toast.error("Google sign-in failed");
           setLoading(false);
           return;
         }
         if (result.redirected) return;
-        window.location.href = "/account";
+        const { data } = await supabase.auth.getUser();
+        if (data.user) {
+          const { data: role } = await supabase
+            .from("user_roles").select("role")
+            .eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
+          window.location.href = role ? "/admin/dashboard" : "/account";
+        } else {
+          window.location.href = "/account";
+        }
       }}
     >
       {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -114,7 +137,7 @@ function LoginForm() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: form.email.trim(),
       password: form.password,
     });
@@ -124,7 +147,7 @@ function LoginForm() {
       return;
     }
     toast.success("Welcome back!");
-    navigate({ to: "/account" });
+    if (data.user) await redirectAfterLogin(navigate, data.user.id);
   };
 
   return (
@@ -152,7 +175,7 @@ function LoginForm() {
         </label>
         <button type="button" className="text-primary hover:underline" onClick={async () => {
           if (!form.email) return toast.error("Enter your email first");
-          const { error } = await supabase.auth.resetPasswordForEmail(form.email, { redirectTo: window.location.origin + "/auth" });
+          const { error } = await supabase.auth.resetPasswordForEmail(form.email, { redirectTo: window.location.origin + "/reset-password" });
           if (error) toast.error(error.message); else toast.success("Reset link sent");
         }}>Forgot?</button>
       </div>
@@ -178,18 +201,22 @@ function RegisterForm() {
     const parsed = registerSchema.safeParse(form);
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: form.email.trim(),
       password: form.password,
       options: {
-        emailRedirectTo: window.location.origin + "/account",
+        emailRedirectTo: window.location.origin + "/auth",
         data: { full_name: form.full_name.trim(), mobile: form.mobile.trim() },
       },
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("🎉 Account created! Welcome to EVChargeHub");
-    navigate({ to: "/account" });
+    if (data.session?.user) {
+      toast.success("🎉 Account created! Welcome to EVChargeHub");
+      await redirectAfterLogin(navigate, data.session.user.id);
+    } else {
+      toast.success("🎉 Account created! Please check your email to verify your address.");
+    }
   };
 
   return (
@@ -243,6 +270,104 @@ function RegisterForm() {
         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
         Create Account
       </Button>
+      <p className="flex items-start gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="mt-0.5 h-3.5 w-3.5 text-primary" />
+        We'll send a verification link to your email. You must verify before signing in.
+      </p>
+    </form>
+  );
+}
+
+function PhoneOtpForm() {
+  const navigate = useNavigate();
+  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const normalizedPhone = () => {
+    const digits = phone.replace(/\D/g, "");
+    const local = digits.startsWith("91") ? digits.slice(2) : digits;
+    if (local.length !== 10) return null;
+    return `+91${local}`;
+  };
+
+  const sendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const p = normalizedPhone();
+    if (!p) return toast.error("Enter a valid 10-digit Indian mobile number");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOtp({ phone: p });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success(`OTP sent to ${p}`);
+    setStep("otp");
+  };
+
+  const verifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const p = normalizedPhone();
+    if (!p) return;
+    if (otp.length < 6) return toast.error("Enter the 6-digit OTP");
+    setLoading(true);
+    const { data, error } = await supabase.auth.verifyOtp({ phone: p, token: otp, type: "sms" });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Signed in!");
+    if (data.user) await redirectAfterLogin(navigate, data.user.id);
+  };
+
+  if (step === "phone") {
+    return (
+      <form onSubmit={sendOtp} className="space-y-4">
+        <div className="space-y-2">
+          <Label>Mobile Number</Label>
+          <div className="relative flex">
+            <span className="inline-flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">+91</span>
+            <div className="relative flex-1">
+              <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="rounded-l-none pl-9"
+                inputMode="numeric"
+                maxLength={10}
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                placeholder="98765 43210"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">We'll text you a 6-digit verification code.</p>
+        </div>
+        <Button type="submit" className="w-full shadow-glow" disabled={loading}>
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          Send OTP
+        </Button>
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={verifyOtp} className="space-y-4">
+      <div className="space-y-2">
+        <Label>Enter OTP sent to +91 {phone}</Label>
+        <Input
+          inputMode="numeric"
+          maxLength={6}
+          required
+          value={otp}
+          onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          placeholder="123456"
+          className="tracking-[0.5em] text-center text-lg"
+        />
+      </div>
+      <Button type="submit" className="w-full shadow-glow" disabled={loading}>
+        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        Verify & Sign In
+      </Button>
+      <button type="button" className="w-full text-xs text-muted-foreground hover:text-foreground" onClick={() => { setStep("phone"); setOtp(""); }}>
+        ← Change number
+      </button>
     </form>
   );
 }
