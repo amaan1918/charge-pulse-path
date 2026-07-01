@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Activity, BarChart3, Battery, Bell, Calendar, Car, IndianRupee, LogOut, MapPin, MessageSquare, Plug, Settings, Shield, Star, Users, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,17 @@ import { stations } from "@/lib/stations";
 import { signOut } from "@/hooks/use-auth";
 import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { toast } from "sonner";
+import { verifyAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/dashboard")({
   head: () => ({ meta: [{ title: "Admin Dashboard — EVChargeHub" }, { name: "robots", content: "noindex" }] }),
+  beforeLoad: async () => {
+    try {
+      await verifyAdmin();
+    } catch {
+      throw redirect({ to: "/admin" });
+    }
+  },
   component: AdminDashboard,
 });
 
