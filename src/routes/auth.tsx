@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -283,7 +283,20 @@ function PhoneOtpForm() {
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
+  const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
+  const [resendIn, setResendIn] = useState(0);
+  const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+  const otp = digits.join("");
+
+  useEffect(() => {
+    if (step !== "otp" || resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn, step]);
+
+  useEffect(() => {
+    if (step === "otp") inputsRef.current[0]?.focus();
+  }, [step]);
 
   const normalizedPhone = () => {
     const digits = phone.replace(/\D/g, "");
@@ -292,8 +305,7 @@ function PhoneOtpForm() {
     return `+91${local}`;
   };
 
-  const sendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const requestOtp = async () => {
     const p = normalizedPhone();
     if (!p) return toast.error("Enter a valid 10-digit Indian mobile number");
     setLoading(true);
@@ -302,19 +314,72 @@ function PhoneOtpForm() {
     if (error) return toast.error(error.message);
     toast.success(`OTP sent to ${p}`);
     setStep("otp");
+    setDigits(["", "", "", "", "", ""]);
+    setResendIn(30);
+  };
+
+  const sendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await requestOtp();
+  };
+
+  const verify = async (code: string) => {
+    const p = normalizedPhone();
+    if (!p) return;
+    if (code.length < 6) return toast.error("Enter the 6-digit OTP");
+    setLoading(true);
+    const { data, error } = await supabase.auth.verifyOtp({ phone: p, token: code, type: "sms" });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      setDigits(["", "", "", "", "", ""]);
+      inputsRef.current[0]?.focus();
+      return;
+    }
+    toast.success("Signed in!");
+    if (data.user) await redirectAfterLogin(navigate, data.user.id);
   };
 
   const verifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const p = normalizedPhone();
-    if (!p) return;
-    if (otp.length < 6) return toast.error("Enter the 6-digit OTP");
-    setLoading(true);
-    const { data, error } = await supabase.auth.verifyOtp({ phone: p, token: otp, type: "sms" });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Signed in!");
-    if (data.user) await redirectAfterLogin(navigate, data.user.id);
+    await verify(otp);
+  };
+
+  const setDigitAt = (i: number, val: string) => {
+    const v = val.replace(/\D/g, "");
+    if (!v) {
+      const next = [...digits];
+      next[i] = "";
+      setDigits(next);
+      return;
+    }
+    if (v.length > 1) {
+      const chars = v.slice(0, 6 - i).split("");
+      const next = [...digits];
+      chars.forEach((c, idx) => (next[i + idx] = c));
+      setDigits(next);
+      const focusIdx = Math.min(i + chars.length, 5);
+      inputsRef.current[focusIdx]?.focus();
+      const full = next.join("");
+      if (full.length === 6) verify(full);
+      return;
+    }
+    const next = [...digits];
+    next[i] = v;
+    setDigits(next);
+    if (i < 5) inputsRef.current[i + 1]?.focus();
+    const full = next.join("");
+    if (full.length === 6) verify(full);
+  };
+
+  const onKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !digits[i] && i > 0) {
+      inputsRef.current[i - 1]?.focus();
+    } else if (e.key === "ArrowLeft" && i > 0) {
+      inputsRef.current[i - 1]?.focus();
+    } else if (e.key === "ArrowRight" && i < 5) {
+      inputsRef.current[i + 1]?.focus();
+    }
   };
 
   if (step === "phone") {
@@ -349,25 +414,54 @@ function PhoneOtpForm() {
 
   return (
     <form onSubmit={verifyOtp} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Enter OTP sent to +91 {phone}</Label>
-        <Input
-          inputMode="numeric"
-          maxLength={6}
-          required
-          value={otp}
-          onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          placeholder="123456"
-          className="tracking-[0.5em] text-center text-lg"
-        />
+      <div className="space-y-3">
+        <div>
+          <Label>Enter verification code</Label>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Sent to <span className="font-medium text-foreground">+91 {phone}</span>
+          </p>
+        </div>
+        <div
+          className="flex justify-between gap-2"
+          onPaste={(e) => {
+            const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+            if (text) { e.preventDefault(); setDigitAt(0, text); }
+          }}
+        >
+          {digits.map((d, i) => (
+            <input
+              key={i}
+              ref={(el) => { inputsRef.current[i] = el; }}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={d}
+              onChange={(e) => setDigitAt(i, e.target.value)}
+              onKeyDown={(e) => onKeyDown(i, e)}
+              onFocus={(e) => e.currentTarget.select()}
+              className="h-12 w-11 rounded-lg border border-input bg-background text-center text-xl font-semibold outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
+              aria-label={`Digit ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
-      <Button type="submit" className="w-full shadow-glow" disabled={loading}>
+      <Button type="submit" className="w-full shadow-glow" disabled={loading || otp.length < 6}>
         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
         Verify & Sign In
       </Button>
-      <button type="button" className="w-full text-xs text-muted-foreground hover:text-foreground" onClick={() => { setStep("phone"); setOtp(""); }}>
-        ← Change number
-      </button>
+      <div className="flex items-center justify-between text-xs">
+        <button type="button" className="text-muted-foreground hover:text-foreground" onClick={() => { setStep("phone"); setDigits(["", "", "", "", "", ""]); }}>
+          ← Change number
+        </button>
+        <button
+          type="button"
+          disabled={resendIn > 0 || loading}
+          className="text-primary hover:underline disabled:cursor-not-allowed disabled:text-muted-foreground disabled:no-underline"
+          onClick={requestOtp}
+        >
+          {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend OTP"}
+        </button>
+      </div>
     </form>
   );
 }
