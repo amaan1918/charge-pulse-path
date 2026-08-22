@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * EVChargeHub — Tesla-inspired dark design system.
- * Palette: deep black, soft white, electric green.
+ * EVChargeHub — Premium Liquid Glass design system.
+ * Palette: deep black / soft white, electric green. Dark-first with full light theme.
  */
 
 @theme inline {
@@ -54,6 +54,8 @@
   --color-ev-green-soft: var(--ev-green-soft);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-glass-highlight: var(--glass-highlight);
+  --color-glass-border: var(--glass-border);
 }
 
 :root {
@@ -85,6 +87,8 @@
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
   --ring: var(--ev-green);
+  --glass-highlight: oklch(1 0 0 / 45%);
+  --glass-border: oklch(1 0 0 / 12%);
   --chart-1: oklch(0.82 0.22 145);
   --chart-2: oklch(0.7 0.18 170);
   --chart-3: oklch(0.6 0.15 200);
@@ -100,13 +104,48 @@
   --sidebar-ring: var(--ev-green);
 }
 
-.dark {
-  /* Same as root — app is dark-first */
+/* Light theme — same Liquid Glass language, bright surfaces */
+.light {
+  --background: oklch(0.965 0.012 155);
+  --foreground: oklch(0.22 0.02 160);
+  --surface: oklch(0.99 0.004 150);
+  --surface-2: oklch(1 0 0);
+  --card: oklch(0.99 0.004 150);
+  --card-foreground: oklch(0.22 0.02 160);
+  --popover: oklch(0.99 0.004 150);
+  --popover-foreground: oklch(0.22 0.02 160);
+  --primary: oklch(0.68 0.19 148);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.93 0.015 155);
+  --secondary-foreground: oklch(0.25 0.02 160);
+  --muted: oklch(0.94 0.012 155);
+  --muted-foreground: oklch(0.45 0.02 158);
+  --accent: oklch(0.9 0.05 150);
+  --accent-foreground: oklch(0.22 0.02 160);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.25 0.02 160 / 10%);
+  --input: oklch(0.25 0.02 160 / 12%);
+  --ring: oklch(0.68 0.19 148);
+  --glass-highlight: oklch(1 0 0 / 90%);
+  --glass-border: oklch(1 0 0 / 70%);
+  --sidebar: oklch(0.97 0.01 155);
+  --sidebar-foreground: oklch(0.22 0.02 160);
+  --sidebar-primary: oklch(0.68 0.19 148);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.93 0.015 155);
+  --sidebar-accent-foreground: oklch(0.22 0.02 160);
+  --sidebar-border: oklch(0.25 0.02 160 / 10%);
+  --sidebar-ring: oklch(0.68 0.19 148);
 }
 
 @layer base {
   * {
     border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
@@ -118,21 +157,84 @@
       radial-gradient(900px 500px at 80% -10%, color-mix(in oklab, var(--ev-green) 18%, transparent), transparent 60%),
       radial-gradient(700px 400px at -10% 30%, color-mix(in oklab, var(--ev-green) 10%, transparent), transparent 60%);
     background-attachment: fixed;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+
+  .light body {
+    background-image:
+      radial-gradient(900px 500px at 80% -10%, color-mix(in oklab, var(--ev-green) 22%, transparent), transparent 60%),
+      radial-gradient(700px 400px at -10% 30%, color-mix(in oklab, oklch(0.7 0.18 170) 14%, transparent), transparent 60%);
   }
 
   h1, h2, h3, h4 { letter-spacing: -0.02em; }
 }
 
+/* ---------- Liquid Glass utilities ---------- */
+
 @utility glass {
-  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  background: color-mix(in oklab, var(--surface) 58%, transparent);
   backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  border: 1px solid color-mix(in oklab, var(--glass-border) 65%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--glass-highlight) 28%, transparent),
+    0 8px 30px -18px oklch(0 0 0 / 45%);
 }
 
 @utility glass-strong {
-  background: color-mix(in oklab, var(--surface-2) 75%, transparent);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid color-mix(in oklab, white 10%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid color-mix(in oklab, var(--glass-border) 80%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, var(--glass-highlight) 40%, transparent),
+    0 18px 50px -22px oklch(0 0 0 / 55%);
+}
+
+@utility glass-soft {
+  background: color-mix(in oklab, var(--surface) 38%, transparent);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--glass-border) 45%, transparent);
+  box-shadow: inset 0 1px 0 0 color-mix(in oklab, var(--glass-highlight) 18%, transparent);
+}
+
+@utility glass-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  border-radius: var(--radius-xl);
+  padding: 0.875rem 1rem;
+  text-align: left;
+  background: color-mix(in oklab, var(--surface) 34%, transparent);
+  border: 1px solid color-mix(in oklab, var(--glass-border) 38%, transparent);
+  box-shadow: inset 0 1px 0 0 color-mix(in oklab, var(--glass-highlight) 15%, transparent);
+  backdrop-filter: blur(10px) saturate(140%);
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  &:hover {
+    background: color-mix(in oklab, var(--surface) 55%, transparent);
+    border-color: color-mix(in oklab, var(--glass-border) 70%, transparent);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: scale(0.985);
+  }
+}
+
+@utility lift {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--glass-border) 80%, transparent);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, var(--glass-highlight) 35%, transparent),
+      0 16px 40px -18px color-mix(in oklab, var(--ev-green) 30%, transparent);
+  }
+}
+
+@utility press {
+  transition: transform 0.15s ease;
+  &:active {
+    transform: scale(0.96);
+  }
 }
 
 @utility text-glow {
@@ -144,8 +246,55 @@
 }
 
 @utility gradient-text {
-  background: linear-gradient(135deg, oklch(0.98 0 0), color-mix(in oklab, var(--ev-green) 80%, white));
+  background: linear-gradient(135deg, var(--foreground), color-mix(in oklab, var(--ev-green) 80%, var(--foreground)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface-2) 55%, transparent);
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--glass-highlight) 22%, transparent), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+@utility page-fade {
+  animation: page-fade 0.35s ease both;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes page-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@utility float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

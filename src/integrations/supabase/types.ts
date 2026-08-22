@@ -35,6 +35,33 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          attachment_url: string | null
+          category: string
+          created_at: string
+          id: string
+          message: string
+          user_id: string | null
+        }
+        Insert: {
+          attachment_url?: string | null
+          category: string
+          created_at?: string
+          id?: string
+          message: string
+          user_id?: string | null
+        }
+        Update: {
+          attachment_url?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -64,25 +91,49 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          city: string | null
           created_at: string
           email: string | null
+          ev_battery_kwh: number | null
+          ev_connector: string | null
+          ev_make: string | null
+          ev_model: string | null
           full_name: string | null
           id: string
           mobile: string | null
+          settings: Json
+          username: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          city?: string | null
           created_at?: string
           email?: string | null
+          ev_battery_kwh?: number | null
+          ev_connector?: string | null
+          ev_make?: string | null
+          ev_model?: string | null
           full_name?: string | null
           id: string
           mobile?: string | null
+          settings?: Json
+          username?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          city?: string | null
           created_at?: string
           email?: string | null
+          ev_battery_kwh?: number | null
+          ev_connector?: string | null
+          ev_make?: string | null
+          ev_model?: string | null
           full_name?: string | null
           id?: string
           mobile?: string | null
+          settings?: Json
+          username?: string | null
         }
         Relationships: []
       }
